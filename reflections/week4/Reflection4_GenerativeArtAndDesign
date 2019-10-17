@@ -1,0 +1,80 @@
+## Reflection 4: Generative Art and Design
+
+I love the idea of computers helping with our design processes in order to augment creativity, particularly through evolutionary design algorithms like Che-Wei Wang was mentioning in his generative design section. By doing the heavy computation work, humans are able to pick and choose based on optimal output (in both scientific contexts and creative contexts). Instead of having constraints on materials and time, we are able to do things extremely quickly (like he mentioned, taking all of evolution and compressing it into minutes). Like Memo Atken mentioned in the article, this will change things for humanity; we will be able to do more things with these tools, produce different outputs, and augment human experience, culture, and general society. I am extremely excited to see how this technology will continue changing ourselves and our society, as this has already started with the creation of the computer and the cellphone (however, of course this has already tied into what Wang calls weaponized design). 
+
+
+## Notes on readings/videos
+
+# Closed systems: Generative art and software abstraction
+- systems combine principles of unpredictability with purity of logic
+- tension between organic and mechanical forms
+- author harvests the most successful results 
+- reverse-engineering based on desired results
+	- explicit descriptions of a system
+	- programming errors -> serendipitous discoveries
+- generative art isn't an art movement -> just strategy for invention of works that share a methodology
+- aesthetic application draws on historical precedants
+	- first programming lanugages -> basic tools -> primitive code frameworks (interest in code-based aesthetics)
+- interactive art -> feedback loop of interaction between system and user
+	- generative art is generally a closed system (closer to drawing/painting)
+- generative art similar to movements like conceptual art, minimalism, and op art (Sol Lewitt)
+- currently at crossroads in field of generative art
+	- works are more mature now
+	- move beyond projections and screen as mediating surfaces
+	- digital fab technology
+	- "data sculptures"
+
+# Memo Atken
+- emerging technologies as a medium and subject matter
+	- impact on individuals (extension of mind and body)
+	- impact on society/culture/tradition etc.
+- big-data driven AI/machine learning (deep learning)
+	- system that improves performance on a particular task as it gains experience
+	- deep learning: form of ML which operates on vast amounts of raw, high dimensinoal data to learn hierarchies of representation
+		- extract meaninful information from big data
+- art market: how much somebody is willing to pay for something, not necessarily related to cultural value
+- several ways to work with this: 
+	- train on own data with own algorithms
+	- train on own data with lightly modified algorithms or other algorithms by other people
+	- curate own data and use your own algorithm
+	- curate own data and use off-the-shelf algorithms
+	- use existing datasets and train with own algorithm
+	- use existing data and train with existing algorithms
+	- use pre-trained models and algorithms
+- issue about authorship, can a machine make art
+- how can emerging technologies augment creativity in a real-time/interactive continuous control
+- action-perception loops
+- extension of the body
+
+# Che-Wei Wang
+- how to make intuitive judgements based on outcome
+- future of design process
+	- embodiment of aesthetic decisions based on intuition
+	- choose the best performing designs
+	- NASA antenna
+1. Generative design (performance based)
+- evolutionary algorithms (based on nature)
+- fuzzy values make it hard on its own in terms of creativity
+2. Neural networks
+- allows for extrapolation with fuzzy values
+- design sampling (filtering + re-generation) 
+- design will get weaponized
+3. Machine Learning + Data
+- "black box"
+
+- arguing that humans need to play more of an orchestrative role in design and technology
+- machines will only see what we told them to see, but machines can create output that is much different -> this is where the magic happens
+
+# Helena Sarin: GAN
+- game of construction
+- dazzled by textures
+- cycleGAN
+- neural bricolage: shaping the interesting and human out of the dump heap of latent space
+- quote by Memo Akten: if we do not use technology to see things differently, we are wasting it 
+	- researchGAN v. artGAN
+- GAN artwork: degraded or composite image of previous events (training data) -> every generated image is new, a partial construct different from its sources
+- question of making new marks
+- GAN artist as a curator -> BUT curation is part of any artistic/creative process
+- GAN artist as a gardener (tending of models)
+- Get hands dirty in code if you want to do something serious
+- GAN artists being curiosity driven
