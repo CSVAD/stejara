@@ -48,8 +48,7 @@ void setup() {
   initControllers();
   initSnowflakes(initNumSnowflakes);
   
-  windCounter = (int)random(60, 240);
-  println(windCounter);
+  windCounter = (int)random(120, 720);
 }
 
 
@@ -134,7 +133,7 @@ void snowflakeMotion () {
     if (counter % windCounter == 0) {
       noiseStrength = -1 * noiseStrength;
       windCounter = (int)random(120, 720);
-      println(windCounter);
+      //println(windCounter);
     }
     snowflakes.get(i).setNoiseStrength(noiseStrength);
     snowflakes.get(i).setYSpeedStrength(ySpeedStrength);
