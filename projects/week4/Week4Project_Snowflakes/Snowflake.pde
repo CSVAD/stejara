@@ -12,6 +12,9 @@ class Snowflake {
   
   PImage p;
   
+  //Snowflake image taken from: 
+  //https://www.pinclipart.com/pindetail/wwhoom_snowflake-12-svg-cut-file-snap-click-supply/
+  
   void initSnowflake(float xPos, float yPos, int size, float noiseStrength, float ySpeedStrength, float alpha) {
     p = loadImage("test1.png");
     this.xPos = xPos;
