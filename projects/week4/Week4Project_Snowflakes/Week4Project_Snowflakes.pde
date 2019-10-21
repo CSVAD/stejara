@@ -1,7 +1,17 @@
 /* Stejara Dinulescu
  * Project
- * This sketch will create several realistic-looking snowflakes that "fall" using perlin noise.
- * Parameters that will be exposed will be: number of snowflakes, wind "power", maybe snowflake design?
+ * This sketch will create several "snowflakes/rain/particles" that "fall" using perlin noise and random movements.
+     * Each particle has its own movement generated with noise (x and y) along it's position
+         * A unique "strength" factor is multiplied to this noise -> however, this accounts for movement that looks to be "in-tandem"
+     * Each particle also has its own random motion that is included in its overall movement pattern, to give variety
+     * The particles also move in tandem with one another according to a "wind" factor
+ * Parameters that will be exposed will be: 
+     * number of snowflakes
+     * noise strength (side to side movement)
+     * y speed strength "vertical movement"
+     * size of particles
+     * snowflakes v. lines v. ellipses
+ * The background also changes color while the program is being run
  */
 
 import controlP5.*;
@@ -10,7 +20,7 @@ import controlP5.*;
 int counter = 0;
 int initNumSnowflakes = 1;
 int numSnowflakes = 100;
-ArrayList<Snowflake> snowflakes = new ArrayList();
+ArrayList<Particle> snowflakes = new ArrayList();
 
 float bR = 98;
 float bG = 140;
@@ -32,6 +42,8 @@ float ySpeedStrength = 1;
 
 int windCounter;
 
+int particleType = 0;
+
 // control P5 vars
 ControlP5 c;
 
@@ -39,11 +51,12 @@ Controller noiseStrengthController;
 Controller numParticlesController;
 Controller ySpeedController;
 Range sizeRange;
+DropdownList type;
 
 void setup() {
   size(800, 800);
   background(bR, bB, bG);
-  noStroke();
+  stroke(255);
   c = new ControlP5(this);
   initControllers();
   initSnowflakes(initNumSnowflakes);
@@ -59,6 +72,8 @@ void draw() {
     initSnowflakes(numSnowflakes - initNumSnowflakes);
     initNumSnowflakes = numSnowflakes;
   } 
+  
+  
   incrementBackground();
   snowflakeMotion();
 }
@@ -71,27 +86,34 @@ void initControllers() {
                           ;
             
   numParticlesController = c.addSlider("numSnowflakes")
-                .setPosition(50, 75)
-                .setRange(1, 100)
-                ;
+                            .setPosition(50, 75)
+                            .setRange(1, 100)
+                            ;
                 
   ySpeedController = c.addSlider("ySpeedStrength")
-            .setPosition(50, 100)
-            .setRange(0, 15)
-            ;
+                      .setPosition(50, 100)
+                      .setRange(0, 15)
+                      ;
                 
   sizeRange = c.addRange("sizeController") 
-                .setBroadcast(false)
-                .setPosition(50,150)
-                .setSize(200,10)
-                .setHandleSize(20)
-                .setRange(1,30)
-                .setRangeValues(1, 30)
-                // after the initialization we turn broadcast back on again
-                .setBroadcast(true)
-                .setColorForeground(color(255,40))
-                .setColorBackground(color(255,40))  
-                ;
+              .setBroadcast(false) 
+              .setPosition(50,150)
+              .setSize(200,10)
+              .setHandleSize(20)
+              .setRange(1,200)
+              .setRangeValues(sizeParamX, sizeParamY)
+              // after the initialization we turn broadcast back on again
+              .setBroadcast(true)
+              .setColorForeground(color(255,40))
+              .setColorBackground(color(255,40))  
+              ;
+   
+  type = c.addDropdownList("particleType")
+          .setPosition(50, 125)
+          .addItem("Snowflake", 0)
+          .addItem("Line", 1)
+          .addItem("Ellipse", 2)
+          ;
 }
 
 void controlEvent(ControlEvent theControlEvent) {
@@ -105,18 +127,29 @@ void controlEvent(ControlEvent theControlEvent) {
     reInitSizeSnowflakes();
     //println("range size update, done.");
   }
+  
+  if(theControlEvent.isFrom("particleType")) {
+    snowflakes.clear();
+    initSnowflakes(numSnowflakes);
+  }
 }
 
 // **************************************Snowflake functions**************************************
 void initSnowflakes(int num) {
   for (int i = 0; i < num; i++) {
-    Snowflake s = new Snowflake();
     xPosition = random(0, width);
     yPosition = random(0, height);
     size = (int)random(sizeParamX, sizeParamY);
     ySpeed = random(0.1, 1.5);
     alpha = random(20, 255);
-    s.initSnowflake(xPosition, yPosition, size, noiseStrength, ySpeedStrength, alpha);
+    Particle s;
+    if (particleType == 0) {
+      s = new Snowflake(xPosition, yPosition, size, noiseStrength, ySpeedStrength, alpha);
+    } else if (particleType == 1) {
+      s = new Line(xPosition, yPosition, size, noiseStrength, ySpeedStrength, alpha);
+    } else {
+      s = new Ellipse(xPosition, yPosition, size, noiseStrength, ySpeedStrength, alpha);
+    }
     snowflakes.add(s);
   }
 }
@@ -137,9 +170,9 @@ void snowflakeMotion () {
     }
     snowflakes.get(i).setNoiseStrength(noiseStrength);
     snowflakes.get(i).setYSpeedStrength(ySpeedStrength);
-    snowflakes.get(i).updateSnowflake();
-    snowflakes.get(i).drawSnowflake();
-    snowflakes.get(i).resetSnowflake();
+    snowflakes.get(i).update();
+    snowflakes.get(i).drawParticle();
+    snowflakes.get(i).reset();
   }
 }
 
