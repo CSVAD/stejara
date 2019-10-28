@@ -1,3 +1,8 @@
+/* Stejara Dinulescu
+ * This project uses Drawing Manager library to create a drawing tool utlizing random() and noise(). 
+ * In this way, the human and the computer draw together, making decisions in tandem to produce unique output.
+ */
+
 import drawing.library.*;
 import processing.pdf.*;
 import controlP5.*;
@@ -7,17 +12,23 @@ DShape shape;
 
 ControlP5 cp5;
 
-float xRange;
-float yRange;
-int r;
-int g;
-int b;
+float xRange = 20;
+float yRange = -20;
+float mouseRange = random(-5, 5);
+int r = 0;
+int g = 0;
+int b = 0;
 int backgroundR = 255;
-int backgroundG = 50;
+int backgroundG = 200;
 int backgroundB = 255;
+
+int counter = 0;
+int negCounter = 1;
 
 Controller xParam;
 Controller yParam;
+Controller mouseRangeParam;
+Controller modeParam;
 Controller rSlider;
 Controller gSlider;
 Controller bSlider;
@@ -37,62 +48,70 @@ void setup() {
 
   xParam = cp5.addSlider("xRange")
     .setPosition(50, 50)
-    .setRange(20, 100)
+    .setRange(-100, 100)
     ;
 
   yParam = cp5.addSlider("yRange") 
     .setPosition(50, 75)
-    .setRange(20, 100)
+    .setRange(-100, 100)
     ;
-  rSlider = cp5.addSlider("r")
+    
+  modeParam = cp5.addSlider("mode") //choose your line texture
     .setPosition(50, 100)
-    .setRange(0, 255)
+    .setRange(1, 2)
     ;
-
-  gSlider = cp5.addSlider("g") 
+    
+  mouseRangeParam = cp5.addSlider("mouseRange") 
     .setPosition(50, 125)
-    .setRange(0, 255)
+    .setRange(-10, 10)
     ;
-
-  bSlider = cp5.addSlider("b")
+    
+  rSlider = cp5.addSlider("r")
     .setPosition(50, 150)
     .setRange(0, 255)
     ;
 
-  brSlider = cp5.addSlider("backgroundR") 
+  gSlider = cp5.addSlider("g") 
     .setPosition(50, 175)
     .setRange(0, 255)
     ;
 
-  brSlider = cp5.addSlider("backgroundG") 
+  bSlider = cp5.addSlider("b")
     .setPosition(50, 200)
     .setRange(0, 255)
     ;
 
-  brSlider = cp5.addSlider("backgroundB") 
+  brSlider = cp5.addSlider("backgroundR") 
     .setPosition(50, 225)
+    .setRange(0, 255)
+    ;
+
+  brSlider = cp5.addSlider("backgroundG") 
+    .setPosition(50, 250)
+    .setRange(0, 255)
+    ;
+
+  brSlider = cp5.addSlider("backgroundB") 
+    .setPosition(50, 275)
     .setRange(0, 255)
     ;
 }
 
 void draw() {
-  println(s);
-  //if (frameCount % s == 0) {
-  //  mode = -1 * mode;
-  //  s = (int)random(60, 240);
-  //  println("switch");
-  //}
+  if (frameCount % s == 0) {
+    mode = -1 * mode;
+    s = (int)random(60, 240);
+    mouseRange = random(-5, 5);
+  }
 }
 
 void keyPressed() {
-  if (key == 'b') {
-    background(backgroundR, backgroundG, backgroundB);
-  }
   if (key == ' ') {
     drawingManager.savePDF();
   }
   if (key == 'c') {
     drawingManager.clear();
+    background(backgroundR, backgroundG, backgroundB);
   }
 }
 
@@ -101,14 +120,34 @@ void mousePressed() {
 }
 
 void mouseDragged() {
+  //set drawing bounds so that when you are changing parameters, you are not "accidentally" drawing
+  if (mouseX > 250) {
+    drawShape();
+  }
+  if (mouseY > 300) {
+    drawShape();
+  }
+}
+
+void drawShape() {
   drawingManager.stroke(r, g, b);
   shape.addVertex(mouseX, mouseY);
   switch(mode) {
   case -1: 
-    shape.addVertex(mouseX / noise(pmouseX, mouseX), mouseY / noise(pmouseY, mouseY));
+    shape.addVertex(mouseX * mouseRange - noise(pmouseX, mouseX) / xRange, mouseY / mouseRange - noise(pmouseY, mouseY) / yRange);
+    println("-1");
     break;
   case 1: 
-    shape.addVertex(mouseX + (noise(pmouseX, mouseX) * xRange), mouseY + noise(pmouseY, mouseY) * yRange);
+    shape.addVertex(mouseX * mouseRange + (noise(pmouseX, mouseX) * xRange), mouseY / mouseRange + noise(pmouseY, mouseY) * yRange);
+    println("1");
+    break;
+  case -2:
+      shape.addVertex(mouseX - noise(pmouseX, mouseX) / xRange, mouseY - noise(pmouseY, mouseY) / yRange);
+      println("-2");
+    break;
+  case 2:
+      shape.addVertex(mouseX + noise(pmouseX, mouseX) * xRange, mouseY + noise(pmouseY, mouseY) * yRange);
+      println("2");
     break;
   }
 }
