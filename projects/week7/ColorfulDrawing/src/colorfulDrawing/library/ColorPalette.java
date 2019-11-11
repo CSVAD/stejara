@@ -41,6 +41,7 @@ public class ColorPalette {
 	public DropdownList colSwatch;
 
 	int paletteNum = 24;
+	int squareSize = 100;
 	int colSwatchType = 0;
 
 	float r, g, b, a;
@@ -56,37 +57,42 @@ public class ColorPalette {
 	ArrayList<PaletteTile> paletteList;
 
 	public ColorPalette(PApplet p, int paletteNum) {
+		welcome();
 		this.p = p;
 		this.paletteNum = paletteNum;
 		cp5 = new ControlP5(p);
 	}
 
-	public void setupPicker() {
+	public void setupPalette() {
 		initCP5();
 		initPalette();
+		p.println("color palette is all set up!");
 	}
 
-	public void drawPicker() {
-		//p.background(255);
+	public void drawPalette() {
 		listen();
 		for (int i = 0; i < paletteNum; i++) {
 			paletteList.get(i).displayPalette();
 		}
 	}
 
-	public void mousePressedPicker() {
+	public void handleMouse() {
 		for (int i = 0; i < paletteNum; i++) {
 			if (paletteList.get(i).isPressed()) {
 				chosenCol = paletteList.get(i).c;
+				p.println("color selected!");
 			}
 		}
 		if (colSwatchType == 4) {
 			counter++;
-			if (counter % 2 == 0) {
-				for (int i = 0; i < paletteNum; i++) {
+			for (int i = 0; i < paletteNum; i++) {
+				if (counter % 2 == 0) {
 					if (paletteList.get(i).isPressed()) {
 						handleSelected(i);
 					}
+				} else {
+					chosenCol = paletteList.get(i).c;
+					p.println("color selected!");
 				}
 			}
 		}
@@ -102,27 +108,33 @@ public class ColorPalette {
 		colSwatch = cp5.addDropdownList("colSwatchType").setPosition(p.width/2 - 180, 50).addItem("random", 0).addItem("red", 1)
 				.addItem("green", 2).addItem("blue", 3).addItem("selected", 4);
 		cp5.getController("colSwatchType").addListener(myListener);
+		p.println("controllers initialized!");
 	}
 
 	private void initPalette() {
-		p.println("Color palette initialized!");
+		int x = (p.width/2 - 180 - strokeNum)/squareSize;
+		int y = (p.height - strokeNum)/squareSize + 1;
+		//p.println(x + " " + y);
+		paletteNum = x*y;
+		//p.println(paletteNum);
 		paletteList = new ArrayList<PaletteTile>();
-		int size = 100;
 		int c = -1;
-		for (int i = strokeNum/2; i < p.width - strokeNum; i += size) {
-			for (int j = strokeNum/2; j < p.height - strokeNum; j += size) {
+		for (int i = 0; i < x; i++) {
+			for (int j = 0; j < y; j++) {
 				c++;
 				r = p.random(255);
 				g = p.random(255);
 				b = p.random(255);
 				a = p.random(50, 255);
-				PaletteTile pt = new PaletteTile(p, p.color(r, g, b, a), size - strokeNum, i, j);
+				PaletteTile pt = new PaletteTile(p, p.color(r, g, b, a), squareSize - strokeNum, strokeNum + i*squareSize, strokeNum + j*squareSize);
 				paletteList.add(pt);
 			}
 		}
+		//p.println(paletteList.size());
+		p.println("color palette initialized!");
 	}
 	
-	public void listen() {
+	private void listen() {
 		//p.println("listening");
 		if (colSwatchType != (int)cp5.getController("colSwatchType").getValue()) {
 			colSwatchType = (int)cp5.getController("colSwatchType").getValue();
@@ -166,7 +178,7 @@ public class ColorPalette {
 	}
 
 	private void handleSelected(int i) {
-		p.println("handle selected!");
+		//p.println("handle selected!");
 		col = paletteList.get(i).c;
 		// println(red(col) + " " + blue(col) + " " + green(col));
 		for (int j = 0; j < paletteNum; j++) {
@@ -181,8 +193,7 @@ public class ColorPalette {
 	}
 	
 	public void paint() {
-		if (p.mouseX > p.width/2) {
-			p.println("painting");
+		if (p.mouseX > p.width/2 && p.mousePressed) {
 			p.pushMatrix();
 			p.stroke(chosenCol);
 			p.strokeWeight(1);
@@ -193,6 +204,10 @@ public class ColorPalette {
 			p.line(p.mouseX, p.mouseY, p.mouseX + newX, p.mouseY + newY);
 			p.popMatrix();
 		}
+	}
+	
+	private void welcome() {
+		p.println("Welcome to Colorful Drawing!");
 	}
 	
 }

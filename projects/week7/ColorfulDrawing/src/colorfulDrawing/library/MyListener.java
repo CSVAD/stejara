@@ -1,12 +1,14 @@
 package colorfulDrawing.library;
 import controlP5.*;
+
+/**
+ * This class is for ControlP5 GUIs.
+ * Created by Jennifer Jacobs
+ * @example MyListener
+ */  
                   
 public class MyListener implements ControlListener {
   public void controlEvent(ControlEvent theEvent) {
-    System.out.println("i got an event from mySlider, " +
-        "changing to "+
-            theEvent.getController().getValue());
-  }
-
-
-}                     
+	  theEvent.getController().getValue();
+  } 
+}                                  

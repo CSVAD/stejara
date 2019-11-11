@@ -4,8 +4,9 @@ import processing.core.*;
 
 /**
  * This class describes one tile object in the color palette.
+ * Created by Stejara Dinulescu
  * @example PaletteTile
- */
+ */   
  
 public class PaletteTile {
 	private PApplet p;
@@ -50,4 +51,4 @@ public class PaletteTile {
 		return pressed;
 	}
 
-}       
+}                    
