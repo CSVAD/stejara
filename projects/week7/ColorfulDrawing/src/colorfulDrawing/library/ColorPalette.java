@@ -19,8 +19,8 @@ import processing.core.*;
  * @example ColorPicker 
  */
 
-public class ColorPicker {
-	PApplet p;
+public class ColorPalette {
+	public PApplet p;
 	
 	public final static String VERSION = "##library.prettyVersion##";
 	
@@ -33,7 +33,8 @@ public class ColorPicker {
 	 * @param theParent
 	 */
 	
-	ControlP5 cp5;
+	public ControlP5 cp5;
+	public MyListener myListener;
 	
 	public Controller numPalettes;
 	public DropdownList colSwatch;
@@ -46,14 +47,13 @@ public class ColorPicker {
 	int strokeNum = 5;
 
 	int counter = 1;
-	boolean selected = false;
 
 	ArrayList<PaletteTile> paletteList;
 
-	public ColorPicker(PApplet p, int paletteNum) {
+	public ColorPalette(PApplet p, int paletteNum) {
 		this.p = p;
 		this.paletteNum = paletteNum;
-		p.println(paletteNum);
+		cp5 = new ControlP5(p);
 	}
 
 	public void setupPicker() {
@@ -63,10 +63,7 @@ public class ColorPicker {
 
 	public void drawPicker() {
 		p.background(255);
-		p.println(colSwatchType);
-		if (colSwatchType == 4 && selected == true) {
-			handleSelected();
-		}
+		listen();
 		for (int i = 0; i < paletteNum; i++) {
 			paletteList.get(i).displayPalette();
 		}
@@ -76,32 +73,28 @@ public class ColorPicker {
 		if (colSwatchType == 4) {
 			counter++;
 			if (counter % 2 == 0) {
-				selected = true;
-			} else {
-				selected = false;
-			}
-		}
-		for (int i = 0; i < paletteNum; i++) {
-			if (paletteList.get(i).isPressed(selected)) {
-				p.println("tile number " + i + " is pressed!");
+				for (int i = 0; i < paletteNum; i++) {
+					if (paletteList.get(i).isPressed()) {
+						handleSelected(i);
+					}
+				}
 			}
 		}
 	}
-
+	
 	private void initCP5() {
-		p.println("CP5 initialized!");
-		cp5 = new ControlP5(p);
-
-		numPalettes = cp5.addSlider("paletteNum").setPosition(625, 24).setRange(1, 64);
+		myListener = new MyListener();
+		numPalettes = cp5.addSlider("paletteNum").setPosition(625, 24).setRange(1, 24);
+		cp5.getController("paletteNum").addListener(myListener);	
 
 		colSwatch = cp5.addDropdownList("colSwatchType").setPosition(625, 50).addItem("random", 0).addItem("red", 1)
 				.addItem("green", 2).addItem("blue", 3).addItem("selected", 4);
+		cp5.getController("colSwatchType").addListener(myListener);
 	}
 
 	private void initPalette() {
 		p.println("Color palette initialized!");
 		paletteList = new ArrayList<PaletteTile>();
-		p.println(paletteNum);
 		int size = 100;
 		int c = -1;
 		for (int i = strokeNum; i < p.width - strokeNum; i += size) {
@@ -117,14 +110,18 @@ public class ColorPicker {
 		}
 	}
 	
-
-	public void controlEvent(ControlEvent theControlEvent) {
-		p.println("the control event is recognized");
-		if (theControlEvent.isFrom("colSwatchType") && colSwatchType != 4) {
-			for (int i = 0; i < paletteNum; i++) {
-				handleColorPalette(i);
+	public void listen() {
+		//p.println("listening");
+		if (colSwatchType != (int)cp5.getController("colSwatchType").getValue()) {
+			colSwatchType = (int)cp5.getController("colSwatchType").getValue();
+			if (colSwatchType != 4) {
+				for (int i = 0; i < paletteNum; i++) {
+					handleColorPalette(i);
+				}
 			}
 		}
+		paletteNum = (int)cp5.getController("paletteNum").getValue();
+		
 	}
 
 	private void handleColorPalette(int i) {
@@ -155,23 +152,18 @@ public class ColorPicker {
 		paletteList.get(i).c = col;
 	}
 
-	private void handleSelected() {
-		// println("selected!");
-		for (int i = 0; i < paletteNum; i++) {
-			if (paletteList.get(i).pressed) {
-				col = paletteList.get(i).c;
-				// println(red(col) + " " + blue(col) + " " + green(col));
-				for (int j = 0; j < paletteNum; j++) {
-					r = p.random((p.red(col) - 50), (p.red(col) + 50));
-					g = p.random((p.green(col) - 50), (p.green(col) + 50));
-					b = p.random((p.blue(col) - 50), (p.blue(col) + 50));
-					a = p.random(50, 255);
-					// println(r, g, b, a);
-					paletteList.get(i).c = p.color(r, g, b, a);
-				}
-			}
+	private void handleSelected(int i) {
+		p.println("handle selected!");
+		col = paletteList.get(i).c;
+		// println(red(col) + " " + blue(col) + " " + green(col));
+		for (int j = 0; j < paletteNum; j++) {
+			r = p.random((p.red(col) - 50), (p.red(col) + 50));
+			g = p.random((p.green(col) - 50), (p.green(col) + 50));
+			b = p.random((p.blue(col) - 50), (p.blue(col) + 50));
+			a = p.random(50, 255);
+			// println(r, g, b, a);
+			paletteList.get(j).c = p.color(r, g, b, a);
 		}
-		selected = false;
 		counter++;
 	}
 }

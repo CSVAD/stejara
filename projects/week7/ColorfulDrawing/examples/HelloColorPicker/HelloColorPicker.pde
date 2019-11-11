@@ -1,11 +1,11 @@
 import colorfulDrawing.library.*;
-ColorPicker cp;
+ColorPalette cp;
 
 void setup() {
   size(800,800);
   smooth();
   
-  cp = new ColorPicker(this, 24);
+  cp = new ColorPalette(this, 24);
   cp.setupPicker();
 }
 
