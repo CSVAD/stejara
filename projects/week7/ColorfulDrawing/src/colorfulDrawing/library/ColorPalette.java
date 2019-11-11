@@ -36,17 +36,22 @@ public class ColorPalette {
 	public ControlP5 cp5;
 	public MyListener myListener;
 	
-	public Controller numPalettes;
+	public Controller noiseXController;
+	public Controller noiseYController;
 	public DropdownList colSwatch;
 
-	int paletteNum;
+	int paletteNum = 24;
 	int colSwatchType = 0;
 
 	float r, g, b, a;
 	int col;
+	int chosenCol;
 	int strokeNum = 5;
 
 	int counter = 1;
+	
+	float noiseXVal;
+	float noiseYVal;
 
 	ArrayList<PaletteTile> paletteList;
 
@@ -62,7 +67,7 @@ public class ColorPalette {
 	}
 
 	public void drawPicker() {
-		p.background(255);
+		//p.background(255);
 		listen();
 		for (int i = 0; i < paletteNum; i++) {
 			paletteList.get(i).displayPalette();
@@ -70,6 +75,11 @@ public class ColorPalette {
 	}
 
 	public void mousePressedPicker() {
+		for (int i = 0; i < paletteNum; i++) {
+			if (paletteList.get(i).isPressed()) {
+				chosenCol = paletteList.get(i).c;
+			}
+		}
 		if (colSwatchType == 4) {
 			counter++;
 			if (counter % 2 == 0) {
@@ -84,10 +94,12 @@ public class ColorPalette {
 	
 	private void initCP5() {
 		myListener = new MyListener();
-		numPalettes = cp5.addSlider("paletteNum").setPosition(625, 24).setRange(1, 24);
-		cp5.getController("paletteNum").addListener(myListener);	
+		noiseXController = cp5.addSlider("noiseXVal").setPosition(p.width/2 - 180, 25).setRange(0, 60);
+		noiseYController = cp5.addSlider("noiseYVal").setPosition(p.width/2 - 180, 35).setRange(0, 60);
+		cp5.getController("noiseXVal").addListener(myListener);
+		cp5.getController("noiseYVal").addListener(myListener);	
 
-		colSwatch = cp5.addDropdownList("colSwatchType").setPosition(625, 50).addItem("random", 0).addItem("red", 1)
+		colSwatch = cp5.addDropdownList("colSwatchType").setPosition(p.width/2 - 180, 50).addItem("random", 0).addItem("red", 1)
 				.addItem("green", 2).addItem("blue", 3).addItem("selected", 4);
 		cp5.getController("colSwatchType").addListener(myListener);
 	}
@@ -97,14 +109,14 @@ public class ColorPalette {
 		paletteList = new ArrayList<PaletteTile>();
 		int size = 100;
 		int c = -1;
-		for (int i = strokeNum; i < p.width - strokeNum; i += size) {
-			for (int j = strokeNum; j < p.height - strokeNum; j += size) {
+		for (int i = strokeNum/2; i < p.width - strokeNum; i += size) {
+			for (int j = strokeNum/2; j < p.height - strokeNum; j += size) {
 				c++;
 				r = p.random(255);
 				g = p.random(255);
 				b = p.random(255);
 				a = p.random(50, 255);
-				PaletteTile pt = new PaletteTile(p, p.color(r, g, b, a), size, i, j);
+				PaletteTile pt = new PaletteTile(p, p.color(r, g, b, a), size - strokeNum, i, j);
 				paletteList.add(pt);
 			}
 		}
@@ -120,7 +132,8 @@ public class ColorPalette {
 				}
 			}
 		}
-		paletteNum = (int)cp5.getController("paletteNum").getValue();
+		noiseXVal = cp5.getController("noiseXVal").getValue();
+		noiseYVal = cp5.getController("noiseYVal").getValue();
 		
 	}
 
@@ -166,5 +179,21 @@ public class ColorPalette {
 		}
 		counter++;
 	}
+	
+	public void paint() {
+		if (p.mouseX > p.width/2) {
+			p.println("painting");
+			p.pushMatrix();
+			p.stroke(chosenCol);
+			p.strokeWeight(1);
+			float noiseMultX = p.random(-noiseXVal, noiseXVal);
+			float noiseMultY = p.random(-noiseYVal, noiseYVal);
+			float newX = p.noise(p.mouseX) * noiseMultX;
+			float newY = p.noise(p.mouseY) * noiseMultY;
+			p.line(p.mouseX, p.mouseY, p.mouseX + newX, p.mouseY + newY);
+			p.popMatrix();
+		}
+	}
+	
 }
 
