@@ -11,4 +11,4 @@ public class MyListener implements ControlListener {
   public void controlEvent(ControlEvent theEvent) {
 	  theEvent.getController().getValue();
   } 
-}                                  
+}                                    

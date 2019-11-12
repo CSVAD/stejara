@@ -15,7 +15,7 @@ void draw() {
   //this statement draws the color picking part of the palette
   cp.drawPalette();
   //this statement allows for drawing on the screen
-  cp.paint();
+  cp.changeBackground();
 }
 
 void mousePressed() {

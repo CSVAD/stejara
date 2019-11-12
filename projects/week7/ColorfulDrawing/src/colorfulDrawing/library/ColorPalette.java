@@ -46,7 +46,7 @@ public class ColorPalette {
 
 	float r, g, b, a;
 	int col;
-	int chosenCol;
+	int chosenCol = 255;
 	int strokeNum = 5;
 
 	int counter = 1;
@@ -203,6 +203,13 @@ public class ColorPalette {
 			float newY = p.noise(p.mouseY) * noiseMultY;
 			p.line(p.mouseX, p.mouseY, p.mouseX + newX, p.mouseY + newY);
 			p.popMatrix();
+		}
+	}
+	
+	public void changeBackground() {
+		p.background(chosenCol);
+		for (int i = 0; i < paletteNum; i++) {
+			paletteList.get(i).displayPalette();
 		}
 	}
 	

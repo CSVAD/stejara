@@ -7,7 +7,7 @@ import processing.core.*;
  * Created by Stejara Dinulescu
  * @example PaletteTile
  */   
- 
+  
 public class PaletteTile {
 	private PApplet p;
 	  
