@@ -14,7 +14,7 @@ void setup() {
 void draw() {
   //this statement draws the color picking part of the palette
   cp.drawPalette();
-  //this statement allows for drawing on the screen
+  //this statement allows for changing of the background based on tile color
   cp.changeBackground();
 }
 
